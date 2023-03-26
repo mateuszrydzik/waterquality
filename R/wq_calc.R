@@ -30,7 +30,7 @@
 #' @export
 wq_calc = function(raster_stack, alg = "all", sat, ...){
   if (!is(raster_stack, 'RasterStack')) stop ("Input object needs to be of the RasterStack class")
-  sats = c("worldview2", "sentinel2", "landsat8", "modis", "meris", "OLCI")
+  sats = c("worldview2", "sentinel2", "sentinel3", "landsat7", "landsat8", "modis", "meris", "OLCI")
   if (!sat %in% sats) stop ("Unknown satellite or instrument.",
                             "Please provide one of: 'worldview2', ",
                             "'sentinel2', 'landsat8', 'modis', or 'meris'")
