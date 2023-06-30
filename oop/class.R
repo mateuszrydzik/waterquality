@@ -18,6 +18,10 @@ Waterquality <- R6Class("Waterquality",
       if (is.null(self$type)) {
         self$type <- private$get_type()
       }
+
+      if (!self$type %in% c("landsat8", "sentinel2")) {
+        stop(paste("Dataset", self$type, "is not supported"))
+      }
     },
 
     calc_index = function(index) {
@@ -35,6 +39,9 @@ Waterquality <- R6Class("Waterquality",
       file <- list.files(self$path,
                         pattern = "_MTL.txt$|MTD_",
                         full.names = TRUE)
+      if (length(file) == 0) {
+        stop("No metadata found, please specify the dataset type")
+      }
       if (grepl("_MTL.txt", file)) {
         lines <- readLines(file)
         matching_line <- grep("SPACECRAFT_ID\\s*=\\s*", lines, value = TRUE)
