@@ -19,16 +19,22 @@ Waterquality <- R6Class("Waterquality",
         self$type <- private$get_type()
       }
 
-      if (!self$type %in% c("landsat8", "sentinel2")) {
+      if (!self$type %in% c("landsat8", "sentinel2", "terra")) {
         stop(paste("Dataset", self$type, "is not supported"))
       }
     },
 
     calc_index = function(index) {
-      index_met <- subset(wq_algorithms, name == index & satellite == self$type)
-      index_function <- private$get_index_function(index)
-      func <- eval(parse(text = index_function))
-      bands <- private$get_bands(index)
+      if (is.character(self$path)) {
+        #self$path is a path to a directory, find bands
+        index_function <- private$get_index_function(index)
+        func <- eval(parse(text = index_function))
+        bands <- private$get_bands(index)
+      }
+      if (inherits(self$path, "SpatRaster")) {
+        #self$path is a SpatRaster, use it as bands
+        bands <- self$path
+      }
       result <- do.call(func, as.list(bands))
       result
     }
